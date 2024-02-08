@@ -2,8 +2,10 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"html/template"
 	"net/http"
+	"os"
 	"sort"
 )
 
@@ -42,7 +44,18 @@ func main() {
 
 	http.HandleFunc("/submit", submitHandler)
 
-	http.ListenAndServe(":8080", nil)
+	port := os.Getenv("PORT")
+
+	if port == "" {
+		port = "8080"
+	}
+
+	fmt.Println("Server listening on 0.0.0.0:8080")
+
+	err := http.ListenAndServe("0.0.0.0:"+port, nil)
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
 }
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
